@@ -59,62 +59,101 @@ const MovieDetailPage = () => {
   if (error) return <div className="text-center text-red-500 mt-10">{error}</div>;
   if (!movie) return null;
 
+  const backdropStyle = movie.backdropImage
+    ? { backgroundImage: `url(${movie.backdropImage})` }
+    : {};
+
   return (
-    <div className="container mx-auto px-4 py-8 text-white">
-      <div className="flex flex-col md:flex-row gap-8">
-        <div className="md:w-1/3">
-          <img src={movie.posterImage} alt={movie.title} className="rounded-lg shadow-lg w-full" />
-        </div>
-        <div className="md:w-2/3">
-          <h1 className="text-4xl font-bold mb-2">{movie.title}</h1>
-          <p className="text-gray-400 text-lg mb-4">
-            {new Date(movie.releaseDate).getFullYear()}
-          </p>
-          <p className="mb-6">{movie.description}</p>
+    <div className="text-white">
+      {/* Backdrop Section */}
+      <div
+        className="w-full h-[30rem] bg-cover bg-center relative"
+        style={backdropStyle}
+      >
+        <div className="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm"></div>
+      </div>
 
-          {user && (
-            <div className="flex items-center space-x-4 mb-6">
-              <button
-                onClick={handleFavoriteToggle}
-                className={`py-2 px-4 rounded-lg font-semibold transition duration-300 flex items-center gap-2 ${
-                  isFavorited
-                    ? 'bg-red-600 hover:bg-red-700'
-                    : 'bg-gray-700 hover:bg-gray-600'
-                }`}
-              >
-                {isFavorited ? 'Favorited' : 'Add to Favorites'}
-              </button>
-              <button
-                onClick={handleWatchlistToggle}
-                className={`py-2 px-4 rounded-lg font-semibold transition duration-300 flex items-center gap-2 ${
-                  isWatchlisted
-                    ? 'bg-blue-600 hover:bg-blue-700'
-                    : 'bg-gray-700 hover:bg-gray-600'
-                }`}
-              >
-                {isWatchlisted ? 'On Watchlist' : 'Add to Watchlist'}
-              </button>
+      {/* Main Content */}
+      <div className="container mx-auto px-4 md:px-8 lg:px-16 -mt-96 relative pb-16">
+        <div className="flex flex-col md:flex-row gap-8">
+          {/* Poster */}
+          <div className="w-full md:w-1/3 lg:w-1/4 flex-shrink-0">
+            <img
+              src={movie.posterImage}
+              alt={`Poster for ${movie.title}`}
+              className="rounded-lg shadow-2xl w-full"
+            />
+          </div>
+
+          {/* Details */}
+          <div className="w-full md:w-2/3 lg:w-3/4 mt-8 md:mt-0">
+            <h1 className="text-4xl lg:text-5xl font-bold mb-1">{movie.title}</h1>
+            <p className="text-gray-300 text-lg italic mb-4">{movie.tagline}</p>
+
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-gray-400 mb-6">
+              <span>⭐ {movie.rating}/10</span>
+              <span>•</span>
+              <span>{movie.duration}</span>
+              <span>•</span>
+              <span>{new Date(movie.releaseDate).getFullYear()}</span>
             </div>
-          )}
 
-          {movie.watchProviders && movie.watchProviders.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-6">
+              {movie.genres.map((genre) => (
+                <span key={genre} className="px-3 py-1 bg-gray-800 text-gray-300 rounded-full text-sm">
+                  {genre}
+                </span>
+              ))}
+            </div>
+
+            {user && (
+              <div className="flex items-center space-x-4 mb-8">
+                <button
+                  onClick={handleFavoriteToggle}
+                  className={`py-2 px-5 rounded-lg font-semibold transition duration-300 flex items-center gap-2 ${
+                    isFavorited
+                      ? 'bg-red-600 hover:bg-red-700 shadow-md shadow-red-600/30'
+                      : 'bg-gray-700 hover:bg-gray-600'
+                  }`}
+                >
+                  {isFavorited ? '♥ Favorited' : '♡ Favorite'}
+                </button>
+                <button
+                  onClick={handleWatchlistToggle}
+                  className={`py-2 px-5 rounded-lg font-semibold transition duration-300 flex items-center gap-2 ${
+                    isWatchlisted
+                      ? 'bg-sky-600 hover:bg-sky-700 shadow-md shadow-sky-600/30'
+                      : 'bg-gray-700 hover:bg-gray-600'
+                  }`}
+                >
+                  {isWatchlisted ? '✓ Watchlisted' : '+ Watchlist'}
+                </button>
+              </div>
+            )}
+
             <div>
-              <h2 className="text-2xl font-bold mb-4">Where to Watch</h2>
+              <h2 className="text-2xl font-semibold border-b-2 border-red-600 pb-2 mb-4 inline-block">
+                Overview
+              </h2>
+              <p className="text-gray-300 leading-relaxed">{movie.story}</p>
+            </div>
+
+            <div className="mt-8">
+              <h3 className="text-xl font-semibold mb-3">Director</h3>
+              <p className="text-gray-400">{movie.director}</p>
+            </div>
+
+            <div className="mt-8">
+              <h3 className="text-xl font-semibold mb-3">Cast</h3>
               <div className="flex flex-wrap gap-4">
-                {movie.watchProviders.map((provider) => (
-                  <a
-                    key={provider.name}
-                    href={provider.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-gray-800 p-3 rounded-lg hover:bg-gray-700 transition duration-300"
-                  >
-                    {provider.name}
-                  </a>
+                {movie.cast.map((actor) => (
+                  <div key={actor} className="bg-gray-800 rounded-lg p-3 text-center">
+                    <p className="font-medium">{actor}</p>
+                  </div>
                 ))}
               </div>
             </div>
-          )}
+          </div>
         </div>
       </div>
     </div>

@@ -7,7 +7,14 @@ const movieSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    description: {
+    tagline: {
+      type: String,
+    },
+    description: { // Short description for cards
+      type: String,
+      required: true,
+    },
+    story: { // Longer plot summary for details page
       type: String,
       required: true,
     },
@@ -15,9 +22,23 @@ const movieSchema = new mongoose.Schema(
       type: String, // URL to the poster image
       required: true,
     },
+    backdropImage: {
+      type: String, // URL to a landscape backdrop image
+    },
     releaseDate: {
       type: Date,
     },
+    director: {
+      type: String,
+    },
+    genres: [String],
+    duration: { // e.g., "2h 44m"
+      type: String,
+    },
+    rating: { // e.g., 8.0
+      type: Number,
+    },
+    cast: [String],
     watchProviders: [
       {
         name: String,
