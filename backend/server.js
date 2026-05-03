@@ -8,7 +8,8 @@ import { connectDB } from './src/config/db.js'
 import authRoutes from './src/routes/authRoutes.js'
 import userRoutes from './src/routes/userRoutes.js'
 import { errorHandler, notFound } from './src/middleware/errorHandler.js'
-
+import carRoutes from './src/routes/carRoutes.js'
+import bookingRoutes from './src/routes/bookingRoutes.js'
 dotenv.config()
 
 const app = express()
@@ -31,6 +32,8 @@ app.use(cookieParser())
 // Routes
 app.use('/api/auth', authRoutes)
 app.use('/api/users', userRoutes)
+app.use('/api/cars', carRoutes)
+app.use('/api/bookings', bookingRoutes)
 
 // ✅ Health check — open http://localhost:5000/api/health to test
 app.get('/api/health', (req, res) => {
