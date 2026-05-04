@@ -5,7 +5,11 @@ import ProtectedRoute from './components/ProtectedRoute.jsx'
 import Home from './pages/Home.jsx'
 import Login from './pages/Login.jsx'
 import Register from './pages/Register.jsx'
-import Dashboard from './pages/Dashboard.jsx'
+import Profile from './pages/Profile.jsx'
+import Cars from './pages/Cars.jsx'
+import CarDetail from './pages/CarDetail.jsx'
+import MyBookings from './pages/MyBookings.jsx'
+import NotFound from './pages/NotFound.jsx'
 
 const App = () => {
   return (
@@ -17,15 +21,12 @@ const App = () => {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
-          </Routes>
+            <Route path="/cars" element={<Cars />} />
+            <Route path="/cars/:id" element={<CarDetail />} />
+            <Route path="/my-bookings" element={<ProtectedRoute><MyBookings /></ProtectedRoute>}/>
+            <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+            <Route path="*" element={<NotFound />} />
+            </Routes>
         </div>
       </AuthProvider>
     </BrowserRouter>
