@@ -1,15 +1,16 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import toast from 'react-hot-toast'
 
-const Register = () => {
+export default function Register() {
   const { register } = useAuth()
   const navigate = useNavigate()
-  const [form, setForm] = useState({ name: '', email: '', password: '' })
-  const [error, setError] = useState('')
+  const [form, setForm]     = useState({ name: '', email: '', password: '' })
+  const [error, setError]   = useState('')
   const [loading, setLoading] = useState(false)
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value })
+  const set = (f) => (e) => setForm(p => ({ ...p, [f]: e.target.value }))
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -17,71 +18,57 @@ const Register = () => {
     setLoading(true)
     try {
       await register(form.name, form.email, form.password)
+      toast.success('Account created! Welcome to PlanPad 🎉')
       navigate('/dashboard')
     } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed')
+      const msg = err.response?.data?.errors?.[0]?.msg || err.response?.data?.message || 'Registration failed.'
+      setError(msg)
     } finally {
       setLoading(false)
     }
   }
 
+  const inputCls = "w-full border-2 border-black rounded-lg px-3.5 py-2.5 text-sm font-medium bg-white outline-none focus:shadow-[3px_3px_0_#5B00F0] focus:border-[#5B00F0] transition-all"
+
   return (
-    <div className="flex items-center justify-center min-h-[80vh] px-4">
-      <div className="w-full max-w-md bg-white border border-gray-200 rounded-lg p-8 shadow-sm">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6">Create Account</h2>
-        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-        <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="min-h-screen bg-[#F7F7F2] flex items-center justify-center p-6">
+      <div className="bg-white border-2 border-black rounded-2xl brutal-lg p-10 w-full max-w-md">
+        <Link to="/" className="font-head text-3xl font-extrabold mb-1 block">
+          Plan<span className="text-[#5B00F0]">Pad</span>
+        </Link>
+        <h2 className="font-head text-2xl font-bold mb-1">Create your account</h2>
+        <p className="text-sm text-gray-500 mb-8">Join PlanPad and start getting things done.</p>
+
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-            <input
-              type="text"
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-              required
-              className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Your name"
-            />
+            <label className="block text-sm font-semibold mb-1.5">Name</label>
+            <input className={inputCls} type="text" placeholder="Your full name"
+              value={form.name} onChange={set('name')} required autoFocus />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <input
-              type="email"
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              required
-              className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="you@email.com"
-            />
+            <label className="block text-sm font-semibold mb-1.5">Email</label>
+            <input className={inputCls} type="email" placeholder="you@example.com"
+              value={form.email} onChange={set('email')} required />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-            <input
-              type="password"
-              name="password"
-              value={form.password}
-              onChange={handleChange}
-              required
-              className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Min 6 characters"
-            />
+            <label className="block text-sm font-semibold mb-1.5">Password</label>
+            <input className={inputCls} type="password" placeholder="Minimum 6 characters"
+              value={form.password} onChange={set('password')} required minLength={6} />
           </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 disabled:opacity-50 text-sm font-medium"
-          >
-            {loading ? 'Creating account...' : 'Register'}
+
+          {error && <p className="text-sm font-semibold text-red-500">⚠ {error}</p>}
+
+          <button type="submit" disabled={loading}
+            className="w-full py-3 font-bold text-sm border-2 border-black rounded-xl bg-[#5B00F0] text-white hover:-translate-x-0.5 hover:-translate-y-0.5 hover:brutal transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
+            {loading ? 'Creating account…' : 'Create Account →'}
           </button>
         </form>
-        <p className="text-sm text-gray-500 mt-4 text-center">
+
+        <p className="text-center text-sm text-gray-500 mt-6">
           Already have an account?{' '}
-          <Link to="/login" className="text-blue-600 hover:underline">Login</Link>
+          <Link to="/login" className="text-[#5B00F0] font-semibold hover:underline">Login</Link>
         </p>
       </div>
     </div>
   )
 }
-
-export default Register

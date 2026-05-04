@@ -8,6 +8,7 @@ import { connectDB } from './src/config/db.js'
 import authRoutes from './src/routes/authRoutes.js'
 import userRoutes from './src/routes/userRoutes.js'
 import todoRoutes from './src/routes/todoRoutes.js'
+import noteRoutes from './src/routes/noteRoutes.js'
 import { errorHandler, notFound } from './src/middleware/errorHandler.js'
 
 dotenv.config()
@@ -33,6 +34,7 @@ app.use(cookieParser())
 app.use('/api/auth', authRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/todos', todoRoutes)
+app.use('/api/notes', noteRoutes)
 
 // ✅ Health check — open http://localhost:5000/api/health to test
 app.get('/api/health', (req, res) => {

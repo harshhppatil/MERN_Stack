@@ -43,13 +43,14 @@ export const createTodo = async (req, res, next) => {
       return res.status(400).json({ errors: errors.array() })
     }
 
-    const { title, description, priority, dueDate, tags } = req.body
+    const { title, description, priority, status, dueDate, tags } = req.body
 
     const todo = await Todo.create({
       user: req.user._id,
       title,
       description,
       priority,
+      status: status || 'pending',
       dueDate: dueDate || null,
       tags: tags || [],
     })

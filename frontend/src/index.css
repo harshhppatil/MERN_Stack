@@ -1,1 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap');
 @import "tailwindcss";
+
+@theme {
+  --font-head: 'Syne', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+
+  --color-primary:    #5B00F0;
+  --color-primary-lt: #EDE9FF;
+  --color-yellow:     #FFE500;
+  --color-ink:        #0A0A0A;
+  --color-surface:    #FFFFFF;
+  --color-muted:      #6B7280;
+  --color-canvas:     #F7F7F2;
+}
+
+/* base */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* neo-brutalist shadow utilities */
+@utility brutal-sm  { box-shadow: 3px 3px 0px #0A0A0A; }
+@utility brutal     { box-shadow: 4px 4px 0px #0A0A0A; }
+@utility brutal-lg  { box-shadow: 6px 6px 0px #0A0A0A; }
+@utility brutal-pri { box-shadow: 4px 4px 0px #5B00F0; }
+
+/* font utilities */
+@utility font-head { font-family: var(--font-head); }
+@utility font-body { font-family: var(--font-body); }
