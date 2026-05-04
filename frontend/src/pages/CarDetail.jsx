@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import api from '../api/axios.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
+import toast from 'react-hot-toast'
+
 
 const CarDetail = () => {
   const { id } = useParams()
@@ -73,9 +75,13 @@ const CarDetail = () => {
         specialRequests: booking.specialRequests,
         pickupLocation: car.location,
     })
+      toast.success('Booking confirmed! Our concierge will contact you shortly.')
       setSuccess(true)
+
     } catch (err) {
-      setError(err.response?.data?.message || 'Booking failed. Please try again.')
+        const msg = err.response?.data?.message || 'Booking failed. Please try again.'
+        setError(msg)
+        toast.error(msg)
     } finally {
       setSubmitting(false)
     }

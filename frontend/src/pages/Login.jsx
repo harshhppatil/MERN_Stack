@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.jsx'
+import toast from 'react-hot-toast'
+
 
 const Login = () => {
   const { login } = useAuth()
@@ -21,8 +23,11 @@ const Login = () => {
     try {
       await login(form.email, form.password)
       navigate('/')
+      toast.success('Welcome to AutoVault!')
     } catch (err) {
-      setError(err.response?.data?.message || 'Invalid email or password')
+      const msg = err.response?.data?.message || 'Invalid email or password'
+        setError(msg)
+        toast.error(msg)
     } finally {
       setLoading(false)
     }

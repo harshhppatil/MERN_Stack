@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import api from '../api/axios.jsx'
+import toast from 'react-hot-toast'
 
 const statusConfig = {
   pending:   { label: 'Pending',   color: 'text-yellow-500', border: 'border-yellow-500/20', bg: 'bg-yellow-500/5'  },
@@ -35,8 +36,9 @@ const MyBookings = () => {
       setBookings(prev =>
         prev.map(b => b._id === id ? { ...b, status: 'cancelled' } : b)
       )
+      toast.success('Booking cancelled successfully.')
     } catch (err) {
-      alert(err.response?.data?.message || 'Cancellation failed')
+        toast.error(err.response?.data?.message || 'Cancellation failed')
     } finally {
       setCancelling(null)
     }

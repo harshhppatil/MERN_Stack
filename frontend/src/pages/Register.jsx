@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.jsx'
+import toast from 'react-hot-toast'
 
 const Register = () => {
   const { register } = useAuth()
@@ -33,8 +34,11 @@ const Register = () => {
     try {
       await register(form.name, form.email, form.password, form.phone, form.address)
       navigate('/dashboard')
+      toast.success('Welcome to AutoVault!')
     } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed')
+      const msg = err.response?.data?.message || 'Registration failed'
+        setError(msg)
+        toast.error(msg)
     } finally {
       setLoading(false)
     }

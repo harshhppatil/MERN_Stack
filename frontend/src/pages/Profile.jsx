@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.jsx'
 import api from '../api/axios.jsx'
+import toast from 'react-hot-toast'
 
 const Profile = () => {
   const { user, setUser, logout } = useAuth()
@@ -32,8 +33,9 @@ const Profile = () => {
       const { data } = await api.put('/users/me', form)
       setUser(data)
       setSuccess(true)
+      toast.success('Profile updated successfully.')
     } catch (err) {
-      setError(err.response?.data?.message || 'Update failed')
+      toast.error(err.response?.data?.message || 'Update failed')
     } finally {
       setSaving(false)
     }
@@ -47,7 +49,7 @@ const Profile = () => {
       await logout()
       navigate('/')
     } catch (err) {
-      setError(err.response?.data?.message || 'Deletion failed')
+      toast.error(err.response?.data?.message || 'Deletion failed')
       setDeleting(false)
     }
   }
