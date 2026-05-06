@@ -6,7 +6,7 @@ import {
   getAllOrders,
   updateOrderStatus,
 } from '../controllers/orderController.js'
-import { protect, adminOnly } from '../middleware/authMiddleware.js'
+import { protect } from '../middleware/authMiddleware.js'
 
 const router = express.Router()
 
@@ -16,7 +16,7 @@ router.get('/myorders',     protect,              getMyOrders)      // GET    /a
 router.get('/:id',          protect,              getOrderById)     // GET    /api/orders/:id
 
 // Admin only
-router.get('/',             protect, adminOnly,   getAllOrders)     // GET    /api/orders
-router.put('/:id/status',   protect, adminOnly,   updateOrderStatus)// PUT   /api/orders/:id/status
+router.get('/',             protect,   getAllOrders)     // GET    /api/orders
+router.put('/:id/status',   protect,   updateOrderStatus)// PUT   /api/orders/:id/status
 
 export default router
