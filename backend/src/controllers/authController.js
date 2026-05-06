@@ -23,10 +23,9 @@ export const register = async (req, res, next) => {
     generateToken(res, user._id)
 
     res.status(201).json({
-      _id: user._id,
-      name: user.name,
+      _id:   user._id,
+      name:  user.name,
       email: user.email,
-      role: user.role,
     })
   } catch (error) {
     next(error)
@@ -53,10 +52,9 @@ export const login = async (req, res, next) => {
     generateToken(res, user._id)
 
     res.json({
-      _id: user._id,
-      name: user.name,
+      _id:   user._id,
+      name:  user.name,
       email: user.email,
-      role: user.role,
     })
   } catch (error) {
     next(error)

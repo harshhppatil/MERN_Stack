@@ -21,12 +21,3 @@ export const protect = async (req, res, next) => {
     return res.status(401).json({ message: 'Not authorized, token failed' })
   }
 }
-
-// Optional — use for admin-only routes
-export const adminOnly = (req, res, next) => {
-  if (req.user && req.user.role === 'admin') {
-    next()
-  } else {
-    res.status(403).json({ message: 'Admin access only' })
-  }
-}
