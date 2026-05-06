@@ -1,35 +1,34 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { AuthProvider } from './context/AuthContext.jsx'
-import Navbar from './components/Navbar.jsx'
-import ProtectedRoute from './components/ProtectedRoute.jsx'
-import Home from './pages/Home.jsx'
-import Login from './pages/Login.jsx'
-import Register from './pages/Register.jsx'
-import Dashboard from './pages/Dashboard.jsx'
+import { Routes, Route } from 'react-router-dom'
+import Navbar from './components/Navbar'
+import Home from './pages/Home'
+import Shop from './pages/Shop'
+import ProductDetail from './pages/ProductDetail'
+import Cart from './pages/Cart'
+import Checkout from './pages/Checkout'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import Orders from './pages/Orders'
+import Profile from './pages/Profile'
+import ProtectedRoute from './components/ProtectedRoute'
 
-const App = () => {
+export default function App() {
   return (
-    <BrowserRouter>
-      <AuthProvider>
-        <div className="min-h-screen bg-gray-50">
-          <Navbar />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
-          </Routes>
-        </div>
-      </AuthProvider>
-    </BrowserRouter>
+    <div className="min-h-screen bg-[#faf7f2]">
+      <Navbar />
+      <Routes>
+        {/* Public */}
+        <Route path="/"            element={<Home />} />
+        <Route path="/shop"        element={<Shop />} />
+        <Route path="/product/:id" element={<ProductDetail />} />
+        <Route path="/cart"        element={<Cart />} />
+        <Route path="/login"       element={<Login />} />
+        <Route path="/register"    element={<Register />} />
+
+        {/* Protected — must be logged in */}
+        <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
+        <Route path="/orders"   element={<ProtectedRoute><Orders /></ProtectedRoute>} />
+        <Route path="/profile"  element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+      </Routes>
+    </div>
   )
 }
-
-export default App
