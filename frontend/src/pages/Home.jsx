@@ -79,11 +79,11 @@ export default function Home() {
     <div className="pt-16 font-sans">
 
       {/* ── HERO ──────────────────────────────────────────────────── */}
-      <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-[#faf7f2] via-[#f5ede4] to-[#fdf0f0]">
+      <section className="relative min-h-[90vh] flex items-center overflow-hidden bg-gradient-to-br from-[#faf7f2] via-[#f5ede4] to-[#fdf0f0]">
         <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] rounded-full bg-[#e8b4b8]/20 blur-3xl animate-pulse" />
         <div className="absolute bottom-[10%] left-[5%] w-[200px] h-[200px] rounded-full bg-[#9caf88]/10 blur-3xl animate-pulse delay-500" />
 
-        <div className="max-w-7xl mx-auto px-6 w-full grid md:grid-cols-2 gap-12 items-center py-24">
+        <div className="max-w-7xl mx-auto px-6 w-full grid md:grid-cols-2 gap-12 items-center py-6">
 
           {/* Left */}
           <div className={`transition-all duration-1000 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
@@ -119,11 +119,11 @@ export default function Home() {
 
           {/* Right — Product Mosaic */}
           <div className={`hidden md:block transition-all duration-1000 delay-200 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4 items-start">
               {mosaicItems.map((item, i) => (
                 <div
                   key={item.label}
-                  className={`bg-gradient-to-br ${item.bg} rounded-3xl p-5 flex flex-col gap-3 shadow-[0_4px_20px_rgba(61,46,34,0.08)] hover:shadow-[0_8px_32px_rgba(61,46,34,0.14)] hover:-translate-y-1 transition-all duration-300 ${i === 0 ? 'mt-6' : ''} ${i === 1 ? '-mt-2' : ''}`}
+                  className={`bg-gradient-to-br ${item.bg} rounded-3xl p-5 flex flex-col gap-3 shadow-[0_4px_20px_rgba(61,46,34,0.08)] hover:shadow-[0_8px_32px_rgba(61,46,34,0.14)] hover:-translate-y-1 transition-all duration-300 `}
                 >
                   <span className="text-4xl">{item.emoji}</span>
                   <div>
