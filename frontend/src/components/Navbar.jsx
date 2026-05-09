@@ -1,132 +1,236 @@
-import { useState, useEffect } from 'react'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext.jsx'
+import { useState, useEffect } from 'react';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
-const Navbar = () => {
-  const { user, logout } = useAuth()
-  const navigate = useNavigate()
-  const location = useLocation()
-  const [scrolled, setScrolled] = useState(false)
+export default function Navbar() {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 40)
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+    const handler = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', handler);
+    return () => window.removeEventListener('scroll', handler);
+  }, []);
 
-  const handleLogout = async () => {
-    await logout()
-    navigate('/')
-  }
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+    setDropdownOpen(false);
+  };
 
   return (
-    <nav
-      className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
-      style={{
-        background: scrolled ? 'rgba(0,0,0,0.95)' : 'transparent',
-        backdropFilter: scrolled ? 'blur(20px)' : 'none',
-        borderBottom: scrolled ? '1px solid #1a1a1a' : '1px solid transparent',
-      }}
-    >
-      <div className="max-w-[1400px] mx-auto px-10 h-[68px] grid grid-cols-3 items-center">
-
-        {/* Logo */}
-        <Link to="/" className="flex items-center gap-3 no-underline group">
-          <div className="relative w-8 h-8 rounded-full border border-bio/40 flex items-center justify-center group-hover:border-bio transition-all duration-300"
-            style={{ boxShadow: 'none' }}
-            onMouseEnter={e => e.currentTarget.style.boxShadow = '0 0 12px rgba(57,255,20,0.4)'}
-            onMouseLeave={e => e.currentTarget.style.boxShadow = 'none'}
-          >
-            <span className="font-display font-bold text-sm text-bio">W</span>
-          </div>
-          <span className="font-display font-semibold text-xl text-white tracking-wide">
-            Wild<span className="text-bio">Tide</span>
-          </span>
+    <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
+      <div className="nav-inner container">
+        <Link to="/" className="nav-logo">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" fill="var(--accent)"/>
+          </svg>
+          WILD<span>TIDE</span>
         </Link>
 
-        {/* Center Nav */}
-        <div className="flex items-center justify-center gap-10">
-          <NavLink to="/destinations">Destinations</NavLink>
-          <NavLink to="/tours">Expeditions</NavLink>
-          <NavLink to="/species">Wildlife</NavLink>
-        </div>
-
-        {/* Auth */}
-        <div className="flex items-center justify-end gap-5">
-          {user ? (
+        <ul className={`nav-links ${menuOpen ? 'open' : ''}`}>
+          <li><NavLink to="/destinations" onClick={() => setMenuOpen(false)}>Expeditions</NavLink></li>
+          <li><NavLink to="/tours" onClick={() => setMenuOpen(false)}>Tours</NavLink></li>
+          <li><NavLink to="/species" onClick={() => setMenuOpen(false)}>Species Archive</NavLink></li>
+          {user && (
             <>
-              {/* Wishlist */}
-              <Link
-                to="/wishlist"
-                className="text-muted hover:text-bio transition-colors duration-200 no-underline"
-                title="Wishlist"
-              >
-                <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
-                </svg>
-              </Link>
-              {/* Bookings */}
-              <Link
-                to="/my-bookings"
-                className="text-muted text-xs tracking-widest uppercase font-sans hover:text-white transition-colors duration-200 no-underline"
-              >
-                Bookings
-              </Link>
-              {/* Profile */}
-              <Link
-                to="/profile"
-                className="btn-bio text-xs tracking-widest uppercase font-sans px-4 py-2 no-underline"
-              >
-                {user.name.split(' ')[0]}
-              </Link>
-              <button
-                onClick={handleLogout}
-                className="text-muted/50 text-xs tracking-widest uppercase font-sans hover:text-red-500 transition-colors duration-200"
-              >
-                Out
-              </button>
-            </>
-          ) : (
-            <>
-              <Link
-                to="/login"
-                className="text-muted text-sm font-sans hover:text-white transition-colors duration-200 no-underline"
-              >
-                Sign In
-              </Link>
-              <Link
-                to="/register"
-                className="btn-bio text-xs font-semibold px-5 py-2.5 font-sans no-underline tracking-wider"
-              >
-                Join
-              </Link>
+              <li><NavLink to="/wishlist" onClick={() => setMenuOpen(false)}>Wishlist</NavLink></li>
+              <li><NavLink to="/bookings" onClick={() => setMenuOpen(false)}>My Bookings</NavLink></li>
             </>
           )}
+        </ul>
+
+        <div className="nav-actions">
+          {user ? (
+            <div className="user-menu">
+              <button
+                className="user-avatar"
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+              >
+                <span>{user.name?.[0]?.toUpperCase() || 'U'}</span>
+              </button>
+              {dropdownOpen && (
+                <div className="user-dropdown">
+                  <div className="dropdown-header">
+                    <p className="dropdown-name">{user.name}</p>
+                    <p className="dropdown-email">{user.email}</p>
+                  </div>
+                  <Link to="/profile" className="dropdown-item" onClick={() => setDropdownOpen(false)}>Profile</Link>
+                  <Link to="/bookings" className="dropdown-item" onClick={() => setDropdownOpen(false)}>My Bookings</Link>
+                  <button className="dropdown-item logout" onClick={handleLogout}>Sign Out</button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <>
+              <Link to="/login" className="btn-outline" style={{ padding: '0.5rem 1rem', fontSize: '12px' }}>Sign In</Link>
+              <Link to="/register" className="btn-primary" style={{ padding: '0.5rem 1rem', fontSize: '12px' }}>Join Expedition</Link>
+            </>
+          )}
+
+          <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
+            <span /><span /><span />
+          </button>
         </div>
       </div>
+
+      <style>{`
+        .navbar {
+          position: fixed;
+          top: 0; left: 0; right: 0;
+          z-index: 1000;
+          height: var(--nav-height);
+          background: transparent;
+          border-bottom: 1px solid transparent;
+          transition: background var(--transition), border-color var(--transition), backdrop-filter var(--transition);
+        }
+        .navbar.scrolled {
+          background: rgba(10,12,11,0.92);
+          backdrop-filter: blur(20px);
+          border-bottom-color: var(--border);
+        }
+        .nav-inner {
+          height: 100%;
+          display: flex;
+          align-items: center;
+          gap: 2rem;
+        }
+        .nav-logo {
+          font-family: var(--font-ui);
+          font-weight: 800;
+          font-size: 1rem;
+          letter-spacing: 0.1em;
+          color: var(--text-primary);
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          flex-shrink: 0;
+        }
+        .nav-logo span { color: var(--accent); }
+        .nav-links {
+          list-style: none;
+          display: flex;
+          align-items: center;
+          gap: 0.25rem;
+          flex: 1;
+        }
+        .nav-links a {
+          font-family: var(--font-ui);
+          font-size: 12px;
+          font-weight: 600;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          color: var(--text-secondary);
+          padding: 0.4rem 0.75rem;
+          border-radius: 4px;
+          transition: color var(--transition), background var(--transition);
+        }
+        .nav-links a:hover, .nav-links a.active {
+          color: var(--text-primary);
+          background: var(--bg-elevated);
+        }
+        .nav-actions {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          flex-shrink: 0;
+          margin-left: auto;
+        }
+        .user-menu { position: relative; }
+        .user-avatar {
+          width: 36px; height: 36px;
+          border-radius: 50%;
+          background: var(--accent-muted);
+          border: 1px solid var(--border-accent);
+          color: var(--accent);
+          font-family: var(--font-ui);
+          font-weight: 700;
+          font-size: 13px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: all var(--transition);
+        }
+        .user-avatar:hover { background: var(--accent); color: #0a0c0b; }
+        .user-dropdown {
+          position: absolute;
+          top: calc(100% + 0.75rem);
+          right: 0;
+          width: 200px;
+          background: var(--bg-elevated);
+          border: 1px solid var(--border);
+          border-radius: var(--radius-md);
+          overflow: hidden;
+          box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        }
+        .dropdown-header {
+          padding: 1rem;
+          border-bottom: 1px solid var(--border);
+        }
+        .dropdown-name {
+          font-family: var(--font-ui);
+          font-weight: 700;
+          font-size: 13px;
+        }
+        .dropdown-email {
+          font-size: 12px;
+          color: var(--text-muted);
+          margin-top: 0.2rem;
+        }
+        .dropdown-item {
+          display: block;
+          width: 100%;
+          text-align: left;
+          padding: 0.7rem 1rem;
+          font-family: var(--font-ui);
+          font-size: 12px;
+          font-weight: 600;
+          color: var(--text-secondary);
+          transition: color var(--transition), background var(--transition);
+          cursor: pointer;
+          border: none;
+          background: none;
+        }
+        .dropdown-item:hover { color: var(--text-primary); background: var(--bg-card); }
+        .dropdown-item.logout { color: #e57373; border-top: 1px solid var(--border); }
+        .hamburger {
+          display: none;
+          flex-direction: column;
+          gap: 4px;
+          padding: 4px;
+        }
+        .hamburger span {
+          display: block;
+          width: 22px;
+          height: 2px;
+          background: var(--text-primary);
+          border-radius: 2px;
+          transition: all var(--transition);
+        }
+        @media (max-width: 768px) {
+          .nav-links {
+            display: none;
+            position: absolute;
+            top: var(--nav-height);
+            left: 0; right: 0;
+            background: rgba(10,12,11,0.97);
+            backdrop-filter: blur(20px);
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            gap: 0;
+          }
+          .nav-links.open { display: flex; }
+          .nav-links a { padding: 0.75rem; width: 100%; }
+          .hamburger { display: flex; }
+          .btn-outline { display: none; }
+        }
+      `}</style>
     </nav>
-  )
+  );
 }
-
-const NavLink = ({ to, children }) => {
-  const location = useLocation()
-  const isActive = location.pathname.startsWith(to)
-
-  return (
-    <Link
-      to={to}
-      className={`relative text-xs tracking-[0.15em] uppercase font-sans font-medium no-underline transition-colors duration-200 group ${
-        isActive ? 'text-bio' : 'text-muted hover:text-white'
-      }`}
-    >
-      {children}
-      <span className={`absolute -bottom-0.5 left-0 h-px bg-bio transition-all duration-300 ${
-        isActive ? 'w-full opacity-100' : 'w-0 opacity-0 group-hover:w-full group-hover:opacity-100'
-      }`}
-        style={{ boxShadow: '0 0 6px rgba(57,255,20,0.8)' }}
-      />
-    </Link>
-  )
-}
-
-export default Navbar

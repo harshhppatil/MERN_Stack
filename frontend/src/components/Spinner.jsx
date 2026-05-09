@@ -1,7 +1,10 @@
-const Spinner = () => (
-  <div className="flex items-center justify-center min-h-screen">
-    <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
-  </div>
-)
-
-export default Spinner
+export default function Spinner({ fullPage = false }) {
+  if (fullPage) {
+    return (
+      <div className="spinner-overlay">
+        <div className="spinner" />
+      </div>
+    );
+  }
+  return <div className="spinner" />;
+}
