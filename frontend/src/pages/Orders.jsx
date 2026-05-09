@@ -122,7 +122,7 @@ export default function Orders() {
     <div className="pt-16 min-h-screen bg-[#faf7f2]">
 
       {/* Header */}
-      <div className="bg-gradient-to-br from-[#f5ede4] to-[#fdf0f0] py-12 px-6 text-center">
+      <div className="bg-gradient-to-br from-[#f5ede4] to-[#fdf0f0] py-7 px-6 text-center">
         <p className="text-[11px] font-semibold tracking-[0.18em] uppercase text-[#c8888e] mb-2">✦ Your History</p>
         <h1 className="font-serif text-4xl font-bold text-[#3d2e22]">My <em className="text-[#8b6f47]">Orders</em></h1>
       </div>

@@ -48,14 +48,14 @@ export default function Navbar() {
           {user ? (
             <Link
               to="/profile"
-              className="text-xs font-bold tracking-widest uppercase text-[#8b6f47] px-4 py-2 rounded-full border border-[#8b6f47]/20 transition-all duration-200"
+              className="text-xs font-bold tracking-widest uppercase bg-[#f5ede4] hover:bg-[#e8d5c4] text-[#8b6f47] px-4 py-2 rounded-full border border-[#8b6f47]/20 transition-all duration-200"
             >
               👤{user.name.split(' ')[0]}
             </Link>
           ) : (
             <Link
               to="/login"
-              className="text-xs font-bold tracking-widest uppercase text-[#8b6f47] hover:text-[#c4714a] transition-colors"
+              className="text-xs font-bold tracking-widest uppercase bg-[#f5ede4] hover:bg-[#e8d5c4] text-[#8b6f47] px-4 py-2 rounded-full border border-[#8b6f47]/20 transition-all duration-200"
             >
               Login
             </Link>

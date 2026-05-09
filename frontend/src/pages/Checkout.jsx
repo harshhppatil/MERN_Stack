@@ -83,7 +83,7 @@ export default function Checkout() {
     <div className="pt-16 min-h-screen bg-[#faf7f2]">
 
       {/* Header */}
-      <div className="bg-gradient-to-br from-[#f5ede4] to-[#fdf0f0] py-12 px-6 text-center">
+      <div className="bg-gradient-to-br from-[#f5ede4] to-[#fdf0f0] py-7 px-6 text-center">
         <p className="text-[11px] font-semibold tracking-[0.18em] uppercase text-[#c8888e] mb-2">✦ Almost There</p>
         <h1 className="font-serif text-4xl font-bold text-[#3d2e22]">
           <em className="text-[#8b6f47]">Checkout</em>
