@@ -14,7 +14,7 @@ const products = [
     category: 'Bags',
     tag: 'bestseller',
     stock: 15,
-    images: [],
+    images: ['/assets/Daisy_Chain_Tote.jpeg'],
   },
   {
     name: 'Blush Bloom Cardigan',
@@ -23,7 +23,7 @@ const products = [
     category: 'Clothing',
     tag: 'new',
     stock: 8,
-    images: [],
+    images: ['/assets/Blush_Bloom_Cardigan.jpeg'],
   },
   {
     name: 'Sage Bucket Hat',
@@ -32,7 +32,7 @@ const products = [
     category: 'Accessories',
     tag: 'trending',
     stock: 20,
-    images: [],
+    images: ['/assets/Sage_Bucket_Hat.webp'],
   },
   {
     name: 'Ivory Cloud Shawl',
@@ -41,7 +41,7 @@ const products = [
     category: 'Clothing',
     tag: 'bestseller',
     stock: 10,
-    images: [],
+    images: ['/assets/Ivory_Cloud_Shawl.jpeg'],
   },
   {
     name: 'Terracotta Market Bag',
@@ -50,7 +50,7 @@ const products = [
     category: 'Bags',
     tag: 'new',
     stock: 12,
-    images: [],
+    images: ['/assets/Terracota_Market_Bag.jpeg'],
   },
   {
     name: 'Wildflower Headband',
@@ -59,7 +59,7 @@ const products = [
     category: 'Accessories',
     tag: 'trending',
     stock: 25,
-    images: [],
+    images: ['/assets/Wild_Flower_Headband.jpeg'],
   },
   {
     name: 'Honey Lace Crop Top',
@@ -68,7 +68,7 @@ const products = [
     category: 'Clothing',
     tag: 'new',
     stock: 7,
-    images: [],
+    images: ['/assets/Honey_Lace_Top.jpeg'],
   },
   {
     name: 'Lavender Mini Bag',
@@ -77,7 +77,7 @@ const products = [
     category: 'Bags',
     tag: 'bestseller',
     stock: 18,
-    images: [],
+    images: ['/assets/Lavender_Mini_Bag.webp'],
   },
   {
     name: 'Peach Blossom Earrings',
@@ -86,7 +86,7 @@ const products = [
     category: 'Accessories',
     tag: 'new',
     stock: 30,
-    images: [],
+    images: ['/assets/Peach_Blossoms_Earrings.jpg'],
   },
   {
     name: 'Boho Fringe Kimono',
@@ -95,7 +95,7 @@ const products = [
     category: 'Clothing',
     tag: 'trending',
     stock: 5,
-    images: [],
+    images: ['/assets/Boho_Fringe_Kimono.jpeg'],
   },
   {
     name: 'Mint Coin Purse',
@@ -104,7 +104,7 @@ const products = [
     category: 'Bags',
     tag: 'bestseller',
     stock: 40,
-    images: [],
+    images: ['/assets/Mint_Coin_Purse.webp'],
   },
   {
     name: 'Rustic Wall Hanging',
@@ -113,35 +113,37 @@ const products = [
     category: 'Home Decor',
     tag: 'new',
     stock: 6,
-    images: [],
+    images: ['/assets/Rustic_Wall_Hanging.jpeg'],
   },
 ]
 
 const seedDB = async () => {
-  await connectDB()
+  try {
+    await connectDB()
 
-  // Clear existing products
-  await Product.deleteMany({})
-  console.log('🗑️  Existing products cleared')
+    // Clear existing products
+    await Product.deleteMany({})
+    console.log('🗑️  Existing products cleared')
 
-  // Insert seed products
-  await Product.insertMany(products)
-  console.log(`✅  ${products.length} products seeded successfully`)
+    // Insert seed products
+    await Product.insertMany(products)
+    console.log(`✅  ${products.length} products seeded successfully`)
 
-  // Make first registered user an admin (handy for testing)
-  const firstUser = await User.findOne({}).sort({ createdAt: 1 })
-  if (firstUser) {
-    firstUser.role = 'admin'
-    await firstUser.save()
-    console.log(`👑  "${firstUser.name}" has been set as admin`)
+    // Make first registered user an admin (handy for testing)
+    const firstUser = await User.findOne({}).sort({ createdAt: 1 })
+    if (firstUser) {
+      firstUser.role = 'admin'
+      await firstUser.save()
+      console.log(`👑  "${firstUser.name}" has been set as admin`)
+    }
+
+    mongoose.connection.close()
+    console.log('🔌  DB connection closed. Happy testing! 🧶')
+  } catch (error) {
+    console.error('❌ Seed failed:', error)
+    mongoose.connection.close()
+    process.exit(1)
   }
-
-  mongoose.connection.close()
-  console.log('🔌  DB connection closed. Happy testing! 🧶')
 }
 
-seedDB().catch((err) => {
-  console.error('Seed failed:', err)
-  mongoose.connection.close()
-  process.exit(1)
-})
+seedDB()
