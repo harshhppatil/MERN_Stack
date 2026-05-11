@@ -102,3 +102,44 @@ export const toggleWatchlist = async (req, res, next) => {
     next(error);
   }
 };
+
+// @desc    Create new review
+// @route   POST /api/movies/:id/reviews
+// @access  Private
+export const createMovieReview = async (req, res, next) => {
+  try {
+    const { rating, comment } = req.body;
+    const movieId = req.params.id;
+
+    const movie = await Movie.findById(movieId);
+
+    if (!movie) {
+      res.status(404);
+      throw new Error('Movie not found');
+    }
+
+    const alreadyReviewed = movie.reviews.find(
+      (r) => r.user.toString() === req.user.id.toString()
+    );
+
+    if (alreadyReviewed) {
+      res.status(400);
+      throw new Error('Movie already reviewed');
+    }
+
+    const review = {
+      name: req.user.name,
+      rating: Number(rating),
+      comment,
+      user: req.user.id,
+    };
+
+    movie.reviews.push(review);
+    movie.numReviews = movie.reviews.length;
+    
+    await movie.save();
+    res.status(201).json({ message: 'Review added', numReviews: movie.numReviews });
+  } catch (error) {
+    next(error);
+  }
+};

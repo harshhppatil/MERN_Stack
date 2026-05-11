@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getMovieById, toggleFavorite, toggleWatchlist } from '../services/movieService';
+import { getMovieById, toggleFavorite, toggleWatchlist, createMovieReview } from '../services/movieService';
 import { useAuth } from '../context/AuthContext';
 import Spinner from '../components/Spinner';
 
@@ -14,6 +14,13 @@ const MovieDetailPage = () => {
 
   const [isFavorited, setIsFavorited] = useState(false);
   const [isWatchlisted, setIsWatchlisted] = useState(false);
+
+  // Review states
+  const [rating, setRating] = useState(5);
+  const [comment, setComment] = useState('');
+  const [reviewError, setReviewError] = useState('');
+  const [reviewSuccess, setReviewSuccess] = useState('');
+  const [submittingReview, setSubmittingReview] = useState(false);
 
   useEffect(() => {
     const fetchMovie = async () => {
@@ -52,6 +59,28 @@ const MovieDetailPage = () => {
       setIsWatchlisted(!isWatchlisted);
     } catch (err) {
       console.error('Failed to toggle watchlist', err);
+    }
+  };
+
+  const submitReviewHandler = async (e) => {
+    e.preventDefault();
+    setReviewError('');
+    setReviewSuccess('');
+    setSubmittingReview(true);
+    
+    try {
+      await createMovieReview(id, { rating, comment });
+      setReviewSuccess('Review submitted successfully!');
+      setComment('');
+      setRating(5);
+      
+      // Refresh movie data to show the new review
+      const res = await getMovieById(id);
+      setMovie(res.data);
+    } catch (err) {
+      setReviewError(err.response?.data?.message || err.message || 'Failed to submit review');
+    } finally {
+      setSubmittingReview(false);
     }
   };
 
@@ -153,6 +182,92 @@ const MovieDetailPage = () => {
                 ))}
               </div>
             </div>
+
+            {/* Reviews Section */}
+            <div className="mt-12">
+              <h2 className="text-2xl font-semibold border-b-2 border-red-600 pb-2 mb-6 inline-block">
+                Reviews
+              </h2>
+              
+              {movie.reviews && movie.reviews.length === 0 && (
+                <div className="bg-gray-800 rounded-lg p-4 mb-6">
+                  <p className="text-gray-400">No reviews yet. Be the first to review this movie!</p>
+                </div>
+              )}
+
+              {/* List of Reviews */}
+              <div className="space-y-4 mb-8">
+                {movie.reviews && movie.reviews.map((review) => (
+                  <div key={review._id} className="bg-gray-800 p-4 rounded-lg">
+                    <div className="flex justify-between items-center mb-2">
+                      <strong className="text-white">{review.name}</strong>
+                      <div className="text-yellow-400">
+                        {Array.from({ length: review.rating }).map((_, i) => (
+                          <span key={i}>★</span>
+                        ))}
+                      </div>
+                    </div>
+                    <p className="text-gray-400 text-sm mb-2">{review.createdAt?.substring(0, 10)}</p>
+                    <p className="text-gray-300">{review.comment}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Add Review Form */}
+              <div className="bg-gray-900 border border-gray-700 rounded-lg p-6">
+                <h3 className="text-xl font-semibold mb-4">Write a Review</h3>
+                
+                {reviewSuccess && <div className="p-3 bg-green-900/50 border border-green-500 text-green-300 rounded mb-4">{reviewSuccess}</div>}
+                {reviewError && <div className="p-3 bg-red-900/50 border border-red-500 text-red-300 rounded mb-4">{reviewError}</div>}
+                
+                {user ? (
+                  <form onSubmit={submitReviewHandler}>
+                    <div className="mb-4">
+                      <label htmlFor="rating" className="block text-gray-400 mb-2">Rating</label>
+                      <select
+                        id="rating"
+                        value={rating}
+                        onChange={(e) => setRating(Number(e.target.value))}
+                        className="w-full bg-gray-800 border border-gray-600 text-white rounded p-2 focus:outline-none focus:border-red-500"
+                        required
+                      >
+                        <option value="">Select...</option>
+                        <option value="1">1 - Poor</option>
+                        <option value="2">2 - Fair</option>
+                        <option value="3">3 - Good</option>
+                        <option value="4">4 - Very Good</option>
+                        <option value="5">5 - Excellent</option>
+                      </select>
+                    </div>
+                    
+                    <div className="mb-4">
+                      <label htmlFor="comment" className="block text-gray-400 mb-2">Comment</label>
+                      <textarea
+                        id="comment"
+                        value={comment}
+                        onChange={(e) => setComment(e.target.value)}
+                        rows="4"
+                        className="w-full bg-gray-800 border border-gray-600 text-white rounded p-2 focus:outline-none focus:border-red-500"
+                        required
+                      ></textarea>
+                    </div>
+                    
+                    <button
+                      type="submit"
+                      disabled={submittingReview}
+                      className="bg-red-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-red-700 transition disabled:opacity-50"
+                    >
+                      {submittingReview ? 'Submitting...' : 'Submit Review'}
+                    </button>
+                  </form>
+                ) : (
+                  <p className="text-gray-400">
+                    Please <a href="/login" className="text-red-500 hover:text-red-400 underline">login</a> to write a review.
+                  </p>
+                )}
+              </div>
+            </div>
+
           </div>
         </div>
       </div>

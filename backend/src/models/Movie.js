@@ -1,5 +1,30 @@
 import mongoose from 'mongoose';
 
+const reviewSchema = new mongoose.Schema(
+  {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+    name: {
+      type: String,
+      required: true,
+    },
+    rating: {
+      type: Number,
+      required: true,
+      min: 1,
+      max: 5,
+    },
+    comment: {
+      type: String,
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
+
 const movieSchema = new mongoose.Schema(
   {
     title: {
@@ -38,6 +63,11 @@ const movieSchema = new mongoose.Schema(
     rating: { // e.g., 8.0
       type: Number,
     },
+    numReviews: {
+      type: Number,
+      default: 0,
+    },
+    reviews: [reviewSchema],
     cast: [String],
     watchProviders: [
       {

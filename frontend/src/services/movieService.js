@@ -20,6 +20,11 @@ export const createMovie = (movieData) => {
   return api.post('/movies', movieData);
 };
 
+// Create a review for a movie
+export const createMovieReview = (id, reviewData) => {
+  return api.post(`/movies/${id}/reviews`, reviewData);
+};
+
 // Update a movie
 export const updateMovie = (id, movieData) => {
   return api.put(`/movies/${id}`, movieData);
