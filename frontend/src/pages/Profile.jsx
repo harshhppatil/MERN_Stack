@@ -25,34 +25,35 @@ const Profile = () => {
   }
 
   const handleSave = async (e) => {
-    e.preventDefault()
-    setSaving(true)
-    setError('')
-    setSuccess(false)
-    try {
-      const { data } = await api.put('/users/me', form)
-      setUser(data)
-      setSuccess(true)
-      toast.success('Profile updated successfully.')
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Update failed')
-    } finally {
-      setSaving(false)
-    }
+  e.preventDefault()
+  setSaving(true)
+  setError('')
+  setSuccess(false)
+  try {
+    await api.put('/users/me', form)
+    setSuccess(true)
+    toast.success('Profile updated successfully.')
+  } catch (err) {
+    setError(err.response?.data?.message || 'Update failed')
+    toast.error(err.response?.data?.message || 'Update failed')
+  } finally {
+    setSaving(false)
   }
+}
 
   const handleDelete = async () => {
-    if (!window.confirm('Are you absolutely sure? This cannot be undone.')) return
-    setDeleting(true)
-    try {
-      await api.delete('/users/me')
-      await logout()
-      navigate('/')
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Deletion failed')
-      setDeleting(false)
-    }
+  if (!window.confirm('Are you absolutely sure? This cannot be undone.')) return
+  setDeleting(true)
+  try {
+    await api.delete('/users/me')
+    toast.success('Account deleted successfully.')
+    await logout()
+    navigate('/')
+  } catch (err) {
+    toast.error(err.response?.data?.message || 'Deletion failed')
+    setDeleting(false)
   }
+}
 
   return (
     <div className="bg-dark min-h-screen pt-[72px]">

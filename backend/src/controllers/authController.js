@@ -1,10 +1,6 @@
 import User from '../models/User.js'
-import { generateToken, clearToken } from '../utils/generateToken.js'
 import { validationResult } from 'express-validator'
 
-// @desc    Register new user
-// @route   POST /api/auth/register
-// @access  Public
 export const register = async (req, res, next) => {
   try {
     const errors = validationResult(req)
@@ -20,24 +16,23 @@ export const register = async (req, res, next) => {
     }
 
     const user = await User.create({ name, email, password, phone, address })
-    generateToken(res, user._id)
+
+    // Set session
+    req.session.userId = user._id
 
     res.status(201).json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      phone: user.phone,
+      _id:     user._id,
+      name:    user.name,
+      email:   user.email,
+      phone:   user.phone,
       address: user.address,
-      role: user.role,
+      role:    user.role,
     })
   } catch (error) {
     next(error)
   }
 }
 
-// @desc    Login user
-// @route   POST /api/auth/login
-// @access  Public
 export const login = async (req, res, next) => {
   try {
     const errors = validationResult(req)
@@ -52,30 +47,30 @@ export const login = async (req, res, next) => {
       return res.status(401).json({ message: 'Invalid email or password' })
     }
 
-    generateToken(res, user._id)
+    // Set session
+    req.session.userId = user._id
 
     res.json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
+      _id:     user._id,
+      name:    user.name,
+      email:   user.email,
+      phone:   user.phone,
+      address: user.address,
+      role:    user.role,
     })
   } catch (error) {
     next(error)
   }
 }
 
-// @desc    Logout user
-// @route   POST /api/auth/logout
-// @access  Public
 export const logout = (req, res) => {
-  clearToken(res)
-  res.json({ message: 'Logged out successfully' })
+  req.session.destroy(err => {
+    if (err) return res.status(500).json({ message: 'Logout failed' })
+    res.clearCookie('connect.sid')
+    res.json({ message: 'Logged out successfully' })
+  })
 }
 
-// @desc    Get currently logged-in user
-// @route   GET /api/auth/me
-// @access  Protected
 export const getMe = async (req, res, next) => {
   try {
     const user = await User.findById(req.user.id)

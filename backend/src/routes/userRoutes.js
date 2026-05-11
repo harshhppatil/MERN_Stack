@@ -21,7 +21,7 @@ router.put('/me', protect, async (req, res, next) => {
     const user = await User.findByIdAndUpdate(
       req.user._id,
       { name, phone, address },
-      { new: true }
+      { returnDocument: 'after' }
     )
     res.json(user)
   } catch (error) {
