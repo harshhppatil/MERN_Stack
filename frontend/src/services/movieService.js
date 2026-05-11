@@ -1,8 +1,13 @@
 import api from '../api/axios';
 
 // Get all movies
-export const getAllMovies = () => {
-  return api.get('/movies');
+export const getAllMovies = (genre = '', searchTerm = '') => {
+  const params = new URLSearchParams();
+  if (genre) params.append('genre', genre);
+  if (searchTerm) params.append('search', searchTerm);
+  
+  const queryString = params.toString();
+  return api.get(`/movies${queryString ? `?${queryString}` : ''}`);
 };
 
 // Get a single movie by its ID

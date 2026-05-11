@@ -4,6 +4,7 @@ import { connectDB } from './src/config/db.js';
 import Movie from './src/models/Movie.js';
 import User from './src/models/User.js';
 import movies from './src/data/movies.js';
+import otherMovies from './src/data/otherMovies.js';
 
 dotenv.config();
 connectDB();
@@ -23,13 +24,15 @@ const importData = async () => {
       process.exit(1);
     }
 
-    const sampleMovies = movies.map((movie) => {
+    const allMovies = [...movies, ...otherMovies];
+
+    const sampleMovies = allMovies.map((movie) => {
       return { ...movie, addedBy: adminUser._id };
     });
 
     await Movie.insertMany(sampleMovies);
 
-    console.log('Data Imported!');
+    console.log('All Data Imported!');
     process.exit();
   } catch (error) {
     console.error(`Error: ${error.message}`);

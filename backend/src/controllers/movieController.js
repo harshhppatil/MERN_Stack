@@ -5,7 +5,18 @@ import Movie from '../models/Movie.js';
 // @access  Public
 export const getAllMovies = async (req, res, next) => {
   try {
-    const movies = await Movie.find({}).populate('addedBy', 'name');
+    const { genre, search } = req.query;
+    let query = {};
+    
+    if (genre) {
+      query.genres = genre; // Match movies that include this genre
+    }
+    
+    if (search) {
+      query.title = { $regex: search, $options: 'i' }; // Case-insensitive search on title
+    }
+    
+    const movies = await Movie.find(query).populate('addedBy', 'name');
     res.json(movies);
   } catch (error) {
     next(error);
